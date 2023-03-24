@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
+from os import remove
 
 class EnumLogLevel(Enum):
     """
@@ -45,10 +46,11 @@ class PyLogger:
                         ["\x1b[1;34;40m","\x1b[0m"]] # Verbose
 
 
-    def __init__(self, logFilePath: str | Path, lineLimit: int = 135) -> None:
+    def __init__(self, logFilePath: str | Path) -> None:
         self.LogFilePath = Path(logFilePath) if isinstance(logFilePath, str) else logFilePath
+        if self.LogFilePath.exists():
+            remove(str(self.LogFilePath))
         self.__Queue = []
-        self.LineLimit = lineLimit
         self.LogStartTime = datetime.now()
         self.RecordStartTime = self.LogStartTime
         self.Info("Log Started.")
@@ -62,10 +64,12 @@ class PyLogger:
 
         if report:
             self.RecordEndTime = datetime.now()
-            self.__Queue.insert(0, "{TimeStamp}{LogLevel}: ".format(TimeStamp = self.RecordEndTime, LogLevel = self.__GetLevelStr(logLevel)))
             self.ElapsedTime = self.RecordEndTime - self.RecordStartTime
-            ElapsedTimeStr = "({ElapsedTime})".format(ElapsedTime = self.ElapsedTime)
-            logMsg = "".join(self.__Queue).ljust(self.LineLimit, " ") + ("" if ElapsedTimeStr == "(0:00:00)" else ElapsedTimeStr)
+            ElapsedTimeStr = datetime.utcfromtimestamp(self.ElapsedTime.total_seconds()).strftime("%H:%M:%S.%f")
+            self.__Queue.insert(0, "{TimeStamp} ({ElapsedTime}) {LogLevel}: ".format(TimeStamp = self.RecordEndTime.strftime('%Y-%m-%d %H:%M:%S'),
+                                                                                    LogLevel = self.__GetLevelStr(logLevel),
+                                                                                    ElapsedTime = ElapsedTimeStr))
+            logMsg = "".join(self.__Queue)
             with open(self.LogFilePath, "a", encoding="utf-8") as file:
                 file.writelines(logMsg + "\n")
             self.__Queue.clear()
