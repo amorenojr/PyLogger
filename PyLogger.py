@@ -1,5 +1,5 @@
 from datetime import datetime
-from enum import Enum
+from enum import Enum, auto
 from pathlib import Path
 from os import remove
 
@@ -8,22 +8,22 @@ class EnumLogLevel(Enum):
     Enumerated type representing the log level.
     """
 
-    Info = 0
+    Info = auto()
     """Info Level"""
 
-    Debug = 1
+    Debug = auto()
     """Info Level"""
 
-    Warning = 2
+    Warning = auto()
     """Warning Level"""
 
-    Error = 3
+    Error = auto()
     """Error Level"""
 
-    Critical = 4
+    Critical = auto()
     """Critical Level"""
 
-    Verbose = 5
+    Verbose = auto()
     """Verbose Level"""
 
 class PyLogger:
