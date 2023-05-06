@@ -84,17 +84,17 @@ class PyLogger:
     def __GetLevelStr(self, logLevel: EnumLogLevel) -> str:
         match logLevel:
             case EnumLogLevel.Info:
-                return " [I]"
+                return "[I]"
             case EnumLogLevel.Debug:
-                return " [D]"
+                return "[D]"
             case EnumLogLevel.Warning:
-                return " [W]"
+                return "[W]"
             case EnumLogLevel.Error:
-                return " [E]"
+                return "[E]"
             case EnumLogLevel.Critical:
-                return " [C]"
+                return "[C]"
             case EnumLogLevel.Verbose:
-                return " [V]"
+                return "[V]"
             case _:
                 return None
 
